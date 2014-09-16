@@ -1,0 +1,33 @@
+<head>
+  <title>pubsub2</title>
+</head>
+
+<body>
+  <form>
+    <input type="text" name="query">
+    <input type="submit" value="Search">
+  </form>
+
+  {{#if loading}}
+    <p>Searching...</p>
+  {{else}}
+    {{#if books.count}}
+      <hr>
+      <table>
+        {{#each books}}
+          {{> book}}
+        {{/each}}
+      </table>
+    {{/if}}
+  {{/if}}
+</body>
+
+<template name="book">
+  <tr>
+    <td class="image"><img src="{{thumb}}"></td>
+    <td>
+      <a href="{{link}}" target="_blank">{{title}}</a>
+      <p>{{{snippet}}}</p>
+    </td>
+  </tr>
+</template>
