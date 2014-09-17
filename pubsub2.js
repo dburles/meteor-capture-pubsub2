@@ -1,5 +1,5 @@
 if (Meteor.isClient) {
-  Books = new Meteor.Collection('books');
+  Books = new Mongo.Collection('books');
 
   var searchHandle;
 
