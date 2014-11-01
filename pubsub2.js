@@ -1,12 +1,13 @@
 if (Meteor.isClient) {
   Books = new Mongo.Collection('books');
 
-  var searchHandle;
+  Session.setDefault('searching', false);
 
   Tracker.autorun(function() {
-    var query = Session.get('query');
-    if (query)
-      searchHandle = Meteor.subscribe('booksSearch', query);
+    if (Session.get('query')) {
+      var searchHandle = Meteor.subscribe('booksSearch', Session.get('query'));
+      Session.set('searching', ! searchHandle.ready());
+    }
   });
 
   Template.body.events({
@@ -22,8 +23,8 @@ if (Meteor.isClient) {
     books: function() {
       return Books.find();
     },
-    loading: function() {
-      return searchHandle && ! searchHandle.ready();
+    searching: function() {
+      return Session.get('searching');
     }
   });
 }
@@ -43,7 +44,7 @@ if (Meteor.isServer) {
           thumb: item.volumeInfo.imageLinks.smallThumbnail,
           title: item.volumeInfo.title,
           link: item.volumeInfo.infoLink,
-          snippet: item.searchInfo.textSnippet
+          snippet: item.searchInfo && item.searchInfo.textSnippet
         };
 
         self.added('books', Random.id(), doc);
